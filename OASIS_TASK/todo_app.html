@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .task-form {
+      margin-bottom: 20px;
+    }
+
+    .task-form input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-right: 10px;
+    }
+
+    .task-form button {
+      padding: 10px 20px;
+    }
+
+    .task-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .task-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .task-list li.completed {
+      background-color: #e0e0e0;
+      color: #888;
+    }
+
+    .task-list li .task-text {
+      flex: 1;
+    }
+
+    .task-list li .task-date {
+      font-size: 0.8em;
+      color: #888;
+    }
+
+    .task-list li .task-actions {
+      margin-left: 10px;
+    }
+
+    .task-list li .task-actions button {
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>To-Do App</h1>
+
+    <div class="task-form">
+      <input type="text" id="taskInput" placeholder="Enter a task">
+      <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <h2>Pending Tasks</h2>
+    <ul id="pendingTaskList" class="task-list"></ul>
+
+    <h2>Completed Tasks</h2>
+    <ul id="completedTaskList" class="task-list"></ul>
+  </div>
+
+  <script>
+    // Function to add a new task
+    function addTask() {
+      var taskInput = document.getElementById("taskInput");
+      var taskText = taskInput.value.trim();
+      if (taskText === "") {
+        return; // Ignore empty tasks
+      }
+
+      var taskList = document.getElementById("pendingTaskList");
+
+      // Create a new list item
+      var li = document.createElement("li");
+      li.innerHTML = '<span class="task-text">' + taskText + '</span><span class="task-date">Added: ' + getFormattedDate() + '</span>';
+      li.classList.add("pending-task");
+
+      // Add buttons for completing, editing, and deleting tasks
+      var actions = document.createElement("span");
+      actions.className = "task-actions";
+      actions.innerHTML = '<button onclick="markTaskComplete(this.parentElement.parentElement)">Mark Complete</button>' +
+                          '<button onclick="editTask(this.parentElement.parentElement)">Edit</button>' +
+                          '<button onclick="deleteTask(this.parentElement.parentElement)">Delete</button>';
+      li.appendChild(actions);
+
+      // Add the list item to the task list
+      taskList.appendChild(li);
+
+      // Clear the input field
+      taskInput.value = "";
+    }
+
+    // Function to mark a task as complete
+    function markTaskComplete(taskItem) {
+      var taskText = taskItem.querySelector(".task-text").textContent;
+      var taskDate = taskItem.querySelector(".task-date").textContent;
+
+      // Create a new list item for completed task
+      var completedTaskList = document.getElementById("completedTaskList");
+      var li = document.createElement("li");
+      li.innerHTML = '<span class="task-text">' + taskText + '</span><span class="task-date">Completed: ' + getFormattedDate() + '</span>';
+      li.classList.add("completed-task");
+
+      // Add buttons for editing and deleting tasks
+      var actions = document.createElement("span");
+      actions.className = "task-actions";
+      actions.innerHTML = '<button onclick="editTask(this.parentElement.parentElement)">Edit</button>' +
+                          '<button onclick="deleteTask(this.parentElement.parentElement)">Delete</button>';
+      li.appendChild(actions);
+
+      // Add the completed task to the completed task list
+      completedTaskList.appendChild(li);
+
+      // Remove the task from the pending task list
+      taskItem.remove();
+    }
+
+    // Function to edit a task
+    function editTask(taskItem) {
+      var taskTextElement = taskItem.querySelector(".task-text");
+      var taskText = taskTextElement.textContent;
+
+      // Create an input field to edit the task
+      var input = document.createElement("input");
+      input.type = "text";
+      input.value = taskText;
+      input.className = "edit-input";
+
+      // Replace the task text with the input field
+      taskTextElement.innerHTML = "";
+      taskTextElement.appendChild(input);
+      input.focus();
+
+      // Replace edit button with save button
+      var editButton = taskItem.querySelector(".task-actions button:nth-child(1)");
+      editButton.innerHTML = "Save";
+      editButton.setAttribute("onclick", "saveTask(this.parentElement.parentElement)");
+    }
+
+    // Function to save an edited task
+    function saveTask(taskItem) {
+      var taskTextElement = taskItem.querySelector(".task-text");
+      var input = taskTextElement.querySelector("input");
+      var newTaskText = input.value.trim();
+      if (newTaskText === "") {
+        return; // Ignore empty tasks
+      }
+
+      // Update the task text
+      taskTextElement.innerHTML = newTaskText;
+
+      // Replace save button with edit button
+      var editButton = taskItem.querySelector(".task-actions button:nth-child(1)");
+      editButton.innerHTML = "Edit";
+      editButton.setAttribute("onclick", "editTask(this.parentElement.parentElement)");
+    }
+
+    // Function to delete a task
+    function deleteTask(taskItem) {
+      taskItem.remove();
+    }
+
+    // Helper function to get formatted date and time
+    function getFormattedDate() {
+      var date = new Date();
+      var options = { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "numeric" };
+      return date.toLocaleDateString("en-US", options);
+    }
+  </script>
+</body>
+</html>

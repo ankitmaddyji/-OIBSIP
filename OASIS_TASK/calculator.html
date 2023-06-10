@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 200px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #display {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #e0e0e0;
+      text-align: right;
+      font-size: 1.5em;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculator</h1>
+    <div id="display"></div>
+    <div class="buttons">
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button onclick="appendOperator('+')">+</button>
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button onclick="appendOperator('-')">-</button>
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button onclick="appendOperator('*')">*</button>
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="appendOperator('.')">.</button>
+      <button onclick="calculate()">=</button>
+      <button onclick="appendOperator('/')">/</button>
+      <button onclick="clearDisplay()">C</button>
+    </div>
+  </div>
+
+  <script>
+    var display = document.getElementById("display");
+    var currentNumber = "";
+    var currentOperator = "";
+    var result = 0;
+
+    function appendNumber(number) {
+      currentNumber += number;
+      display.innerHTML = currentNumber;
+    }
+
+    function appendOperator(operator) {
+      currentOperator = operator;
+      currentNumber += operator;
+      display.innerHTML = currentNumber;
+    }
+
+    function calculate() {
+      if (currentNumber.includes("/") && parseFloat(currentNumber.split("/")[1]) === 0) {
+        display.innerHTML = "Error";
+        return;
+      }
+
+      result = eval(currentNumber);
+      display.innerHTML = result;
+      currentNumber = result.toString();
+    }
+
+    function clearDisplay() {
+      display.innerHTML = "";
+      currentNumber = "";
+      currentOperator = "";
+      result = 0;
+    }
+  </script>
+</body>
+</html>
